@@ -6,17 +6,23 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "build": "tsc",
+    "seed": "ts-node src/infra/database/config/run-seed.ts",
     "start": "node dist/main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/mongoose": "^5.11.96",
     "@types/uuid": "^10.0.0",
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
+    "mongoose": "^5.13.23",
+    "ts-mongoose": "^0.0.24",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.1",
     "@types/node": "^22.15.17",
     "ts-node-dev": "^2.0.0",

@@ -1,6 +1,8 @@
-class Client {
+import { ClientProps } from "../types/ClientProps";
 
-  constructor(public readonly props: ClientProps, public readonly id?: string) 
+export class Client {
+
+  constructor(public readonly props: ClientProps, public readonly id: string) 
   {
     this.validate();
   }

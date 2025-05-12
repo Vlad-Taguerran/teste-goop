@@ -1,6 +1,16 @@
-type OrderProps = {
+import { OrderItem } from "../entities/OrderItem";
+
+
+export enum OrderStatus {
+  PENDING = "PENDING", 
+  PAID = "PAID",       
+  CANCELLED = "CANCELLED", 
+}
+export type OrderProps = {
   clientId:string,
   status: string,
-  itens:{productId:string,stock:number,price:number}[];
+  itens:OrderItem[],
+  orderDate: Date,
+  totalAmount: number
 
 }
