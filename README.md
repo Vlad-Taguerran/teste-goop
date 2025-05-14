@@ -68,4 +68,4 @@ Para parar e remover todos os contêineres, redes e volumes (se usados) criados 
 docker compose down
 ```
 ## Postman
-Há um arquivo de teste com o Postman basta importalo
+Há um arquivo de teste com o Postman basta importá-lo
