@@ -14,8 +14,6 @@ async function runSeeds() {
     
     if (typeof seedModule.default === 'function') {
       await seedModule.default(); // se você usou export default
-    } else if (typeof seedModule.createSeed === 'function') {
-      await seedModule.createSeed(); // se usou export nomeado
     } else {
       console.warn(`Seed ${file} não exporta função executável.`);
     }

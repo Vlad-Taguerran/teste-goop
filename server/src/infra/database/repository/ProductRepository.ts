@@ -1,9 +1,13 @@
+import { Order } from "../../../domain/entities/Order";
 import { Product } from "../../../domain/entities/Product";
 import { IProductRepository } from "../../../domain/repositories/IProductRepository";
 import { ProductMapper } from "../mongoDB/mapper/ProductMapper";
 import { ProductModel } from "../mongoDB/schemas/ProductSchema";
 
 export class ProductRepository implements IProductRepository{
+  update(order: Order): Promise<Product> {
+    throw new Error("Method not implemented.");
+  }
  async create(product: Product): Promise<Product | null> {
    const existe  = await ProductModel.findOne({name: product.name});
    if(existe){
@@ -41,5 +45,16 @@ try {
     console.error('Erro ao buscar todos os produtos:', error);
     return [];
   }
+  }
+  async findById(id: string): Promise<Product>{
+    const doc = await ProductModel.findById(id);
+    return ProductMapper.toDomain(doc);   
+  }
+
+   async decreaseStock(productId: string, quantity: number) {
+    await ProductModel.updateOne(
+      { _id: productId },
+      { $inc: { stockQuantity: -quantity, reservedQuantity: -quantity } }
+    );
   }
 }

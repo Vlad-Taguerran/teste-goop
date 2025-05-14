@@ -7,11 +7,15 @@ import { CreateOrderDto } from "../../dtos/order/CreateOrderDto";
 import { IOrderRepository } from "./../../../domain/repositories/IOrderRepository";
 import { OrderProps, OrderStatus } from "../../../domain/types/OrderProps";
 import { Order } from "../../../domain/entities/Order";
+import { RabbitMQProducer } from "../../../infra/messaging/RabbitMQProducer";
 export class CreateOrderUseCase {
+ 
   constructor(
     private orderRepository: IOrderRepository,
     private clientRepository: IClientRepository,
-    private productRepository: IProductRepository) {}
+    private productRepository: IProductRepository) {
+      
+    }
 
   async execute(dto: CreateOrderDto){
    
@@ -32,12 +36,12 @@ export class CreateOrderUseCase {
     const orderItems: OrderItem[] =[];
     for (const itemInput of dto.itens) {
             const product = productMap.get(itemInput.productId);
-
-        
             if (itemInput.quantity <= 0) {
                  throw new Error(`Quantidade inválida para o produto ${itemInput.productId}: ${itemInput.quantity}.`);
             }
-           
+            if(product?.reservedQuantity === product?.stockQuantity){
+              throw new Error(`Produto Esgotado`)
+            }
             orderItems.push(new OrderItem({
                 productId: product!.id, 
                 productName: product!.name,
@@ -54,8 +58,10 @@ export class CreateOrderUseCase {
             totalAmount: 0, 
         };
 
-        const order = new Order(orderProps,v4());
+       const order = new Order(orderProps,v4());
       
-   await this.orderRepository.create(order);
+  const orderSaved = await this.orderRepository.create(order);
+  
+   return orderSaved;
   }
 }

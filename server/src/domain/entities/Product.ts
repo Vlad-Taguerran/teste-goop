@@ -3,6 +3,7 @@ export class Product {
     public name: string,
     public price: number,
     public stockQuantity: number,
+    public reservedQuantity: number,
     public readonly id: string
   ) {
     this.validate();

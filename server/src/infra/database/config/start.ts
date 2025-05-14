@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
+import { startReserveWatcher } from '../watchs/ReserveExpirationWatcher';
 
-const mongoUri = process.env.MONGO_URI || 'mongodb://root:root@localhost:27017';
+
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017';
 const dbName = process.env.MONGO_DB_NAME || 'goop';
+
 
 export async function connectDatabase(): Promise<void> {
   const maxRetries = 5;
@@ -18,6 +21,7 @@ export async function connectDatabase(): Promise<void> {
       await mongoose.connection.db.admin().ping();
 
       console.log('✅ MongoDB conectado com sucesso!');
+      startReserveWatcher();
       break;
     } catch (error) {
       console.warn(`⚠️ Tentativa ${attempt} falhou: ${(error as Error).message}`);

@@ -19,19 +19,21 @@ export default async function seedProducts() {
   ];
 
   for (const item of productsToSeed) {
-    const exists = await productRepository.findByName(item.name);
-    if (exists) {
-      console.log(`Produto ${item.name} já existe. Pulando...`);
-      continue;
-    }
+    
+   
 
-    const product = new Product(item.name, item.price, item.stockQuantity, v4());
-
+    const product = new Product(item.name, item.price, item.stockQuantity,0, v4());
     try {
+      
       await productRepository.create(product);
+      
       console.log(`Produto ${item.name} criado com sucesso!`);
-    } catch (error) {
-      console.error(`Erro ao criar produto ${item.name}:`, error);
+    } catch (error:any) {
+      if (error.code === 11000) {
+      console.log(`Produto ${item.name} já existe (erro de chave duplicada). Pulando.`);
+    } else {
+      console.error(`Erro inesperado ao criar produto ${item.name}:`, error);
+    }
     }
   }
 }

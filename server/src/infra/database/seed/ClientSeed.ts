@@ -1,10 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'; // Para gerar o UUID
-import bcrypt from 'bcrypt';
 import { ClientModel } from '../mongoDB/schemas/ClientSchema';
-import { ClientRepository } from '../repository/ClientRepository';
+import bcrypt from 'bcryptjs/umd/types';
 
 export default async function  createClientSeed() {
-  const clientRepository = new ClientRepository();
   const clientData = {
       _id: uuidv4(),
       name: 'Cliente 1',
@@ -14,19 +12,18 @@ export default async function  createClientSeed() {
     }
 
     
-    const validate = clientRepository.findByEmail(clientData.email);
-    if(validate != null){
-      return;
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(clientData.password, salt);
-
-    
-    await ClientModel.create({
-      clientData,
-      password: hashedPassword, 
+   try {
+     await ClientModel.create({
+      ...clientData,
     });
 
+   } catch (error: any) {
+         if (error.code === 11000) {
+      console.log(`Produto ${clientData.name} já existe (erro de chave duplicada). Pulando.`);
+    } else {
+      console.error(`Erro inesperado ao criar produto ${clientData.name}:`, error);
+    }
+   }
     console.log(`Cliente ${clientData.name} criado com sucesso!`);
   }
 

@@ -5,7 +5,7 @@ import { OrderDocument } from "../schemas/OrderSchema";
 
 export class OrderMapper {
   static toDomain(raw: any): Order {
-    const itens = raw.itens.map(item => new OrderItem({
+    const itens = raw.itens.map((item: { productId: any; productName: any; quantity: any; unityPrice: any; }) => new OrderItem({
       productId: item.productId,
       productName: item.productName,
       quantity: item.quantity,
@@ -31,6 +31,21 @@ export class OrderMapper {
       orderDate: order.props.orderDate,
       totalAmount: order.props.totalAmount,
       itens: order.props.itens.map(item => ({
+        productId: item.props.productId,
+        productName: item.props.productName,
+        quantity: item.props.quantity,
+        unityPrice: item.props.unityPrice,
+      })),
+    };
+  }
+  static toDTO(order: Order): any {
+    return {
+      id: order.id,
+      clientId: order.clientId,
+      status: order.status,
+      orderDate: order.orderDate,
+      totalAmount: order.totalAmount,
+      itens: order.itens.map((item) => ({
         productId: item.props.productId,
         productName: item.props.productName,
         quantity: item.props.quantity,

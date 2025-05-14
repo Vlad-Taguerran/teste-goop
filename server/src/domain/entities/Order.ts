@@ -3,18 +3,28 @@ import { OrderItem } from "./OrderItem";
 import { Product } from "./Product";
 
 export class Order {
+ public    clientId: string;
+ public    status: string;
+ public    itens: OrderItem[];
+ public   orderDate: Date;
+ public   totalAmount: number;
   constructor(
     public props: OrderProps,
     public readonly id: string) {
+      this.clientId = props.clientId;
+      this.status = props.status;
+      this.itens = props.itens;
+      this.orderDate = props.orderDate;
+      this.totalAmount = props.totalAmount;
       this.recauculateAmount();
     }
 
 
     public addItem(product: Product, quantity: number): void{
-        if (this.props.status !== OrderStatus.PENDING) {
+        if (this.status !== OrderStatus.PENDING) {
       throw new Error("Não é possível adicionar itens a um pedido que não esteja PENDENTE.");
     }
-    const existingItemIndex = this.props.itens.findIndex(item => item.props.productId === product.id);
+    const existingItemIndex = this.itens.findIndex(item => item.props.productId === product.id);
     if(existingItemIndex > -1){
       const existingItem = this.props.itens[existingItemIndex];
       const newQuantity = existingItem.props.quantity + quantity;
@@ -48,4 +58,11 @@ export class Order {
     private recauculateAmount(): void{
       this.props.totalAmount = this.props.itens.reduce((sum, item)=> sum + item.calculateItemTotalPrice(),0);
     }
+
+     markAsPaid() {
+    if (this.status === 'PAID') {
+      throw new Error('Order is already PAID.');
+    }
+    this.status = 'PAID';
+  }
 }

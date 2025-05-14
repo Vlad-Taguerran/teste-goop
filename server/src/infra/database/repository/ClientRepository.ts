@@ -4,17 +4,18 @@ import { ClientMapper } from "../mongoDB/mapper/ClientMapper";
 import { ClientModel } from "../mongoDB/schemas/ClientSchema";
 
 export class ClientRepository implements IClientRepository {
-  findById(id: string): Promise<Client> {
+  async findById(id: string): Promise<Client> {
     try {
-     return ClientModel.findById(id);
+      const client = await ClientModel.findById(id);
+     return ClientMapper.toDomain(client);
     } catch (error) {
       console.error(error);
       throw new Error("Erro ao buscar client");
     }
   }
-  async findByEmail(email: string): Promise<Client | null>{
+  async findByEmail(email: string): Promise<Client>{
   const clientDoc =  await ClientModel.findOne({email}).exec();
-    if(!clientDoc) return null;
+    if(!clientDoc)throw new Error('cliente não encontrado');
     return ClientMapper.toDomain(clientDoc);
   }
  async  create(client: Client): Promise<void> {

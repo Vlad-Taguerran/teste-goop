@@ -1,0 +1,15 @@
+/* home.component.scss */
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.product-card {
+  width: 250px;
+}
+
+.order-card {
+  margin-top: 32px;
+  width: 250px;
+}

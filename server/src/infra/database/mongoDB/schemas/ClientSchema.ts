@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import bcrypt from 'bcrypt'; // não se esqueça de instalar com: npm i bcrypt
+import bcrypt from 'bcryptjs'; // não se esqueça de instalar com: npm i bcrypt
 
 export interface IClient extends Document {
   _id: string;
@@ -19,9 +19,7 @@ const ClientSchema = new Schema<IClient>({
 
 ClientSchema.pre('save', async function(next){
     if (!this.isModified('password')) return next();
-
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 })
 
